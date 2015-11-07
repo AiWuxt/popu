@@ -281,7 +281,7 @@ class PopuOval extends JPanel implements KeyListener{
                 }
             }
         }
-        g.drawString("score=" + score, 0, 450);
+        //g.drawString("score=" + score, 0, 450);
     }
 
     @Override
