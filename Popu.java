@@ -166,13 +166,13 @@ class PopuOval extends JPanel implements KeyListener{
                 if(map[i][j]<5){
                     if(!isRelated[i][j]){
                         groupOval(i,j,map[i][j]);
-                        if(nCount<4){
-                            nCount = 0;
-                        }
+                        if(nCount<4){ setOval(i,j,map[i][j]);}
+                        nCount = 0;
                     }
                 }
             }
         }
+        //deOval();
     }
 
     public void groupOval(int a, int b, int value){
@@ -188,15 +188,27 @@ class PopuOval extends JPanel implements KeyListener{
         }
     }
 
+    public void setOval(int a, int b, int value){
+        if(a>=1 && a<=11 && b<=18 && b>=0){
+            if(map[a][b] == value && isRelated[a][b] == true){
+                isRelated[a][b] = false;
+                setOval(a, b+1, value);
+                setOval(a+1, b, value);
+                setOval(a, b-1, value);
+                setOval(a-1, b, value);
+            }
+        }
+    }
+
     public void deOval(){
         for(j = 18; j >= 0; j--) {
             for (i = 1; i <= 10; i++) {
                 if (isRelated[i][j]){
                     map[i][j] = 5;
+                    isRelated[i][j] =false;
                 }
             }
         }
-        setisRelated();
         dropOval();
     }
 
@@ -224,18 +236,27 @@ class PopuOval extends JPanel implements KeyListener{
         else return 1;
     }
 
+    public int isTrue(){
+        for(j=18;j>=0;j--){
+            for(i=0;i<=10;i++){
+                if(isRelated[i][j]){
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+
     public void addOval(){
         blow();
         if(fDown==false) map[fX][fY] = oval1[fColor];
         if(sDown==false) map[sX][sY] = oval2[sColor];
         if(fDown==false&&sDown==false){
-            /*nCount = 0;setisRelated();
-            groupOval(fX,fY,map[fX][fY]);
-            if(nCount>=4) deOval();
-            nCount = 0;setisRelated();
-            groupOval(sX,sY,map[sX][sY]);
-            if(nCount>=4) deOval();*/
             checkOval();
+            while (isTrue()==1){
+                deOval();
+                checkOval();
+            }
             newOval();
         }
     }
