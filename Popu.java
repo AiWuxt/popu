@@ -45,12 +45,12 @@ class PopuOval extends JPanel implements KeyListener{
     private int turnState;
     private int nCount = 0;
     private boolean isRelated[][] = new boolean[12][20];
-    public void setisRelated(){
+    /*public void setisRelated(){
         for(i = 1; i <= 10; i++){
             for(j = 0; j <= 18; j++)
                 isRelated[i][j] = false;
         }
-    }
+    }*/
     int[][] map = new int[12][20];
     private final int oval1[] = new int[]{0,1,2,3,4};
     private final int oval2[] = new int[]{0,1,2,3,4};
@@ -137,7 +137,7 @@ class PopuOval extends JPanel implements KeyListener{
         if(fDown&&sDown&&right){fX += 1;sX += 1;}
         repaint();
     }
-    public void down(){
+    public void down() throws InterruptedException {
         blow();
         if(fDown){
             fY += 1;
@@ -177,7 +177,7 @@ class PopuOval extends JPanel implements KeyListener{
 
     public void groupOval(int a, int b, int value){
         if(a>=1 && a<=11 && b<=18 && b>=0){
-            if(map[a][b] == value && isRelated[a][b] == false){
+            if(map[a][b] == value && !isRelated[a][b]){
                 nCount++;
                 isRelated[a][b] = true;
                 groupOval(a, b + 1, value);
@@ -190,7 +190,7 @@ class PopuOval extends JPanel implements KeyListener{
 
     public void setOval(int a, int b, int value){
         if(a>=1 && a<=11 && b<=18 && b>=0){
-            if(map[a][b] == value && isRelated[a][b] == true){
+            if(map[a][b] == value && isRelated[a][b]){
                 isRelated[a][b] = false;
                 setOval(a, b+1, value);
                 setOval(a+1, b, value);
@@ -247,15 +247,16 @@ class PopuOval extends JPanel implements KeyListener{
         return 0;
     }
 
-    public void addOval(){
+    public void addOval() throws InterruptedException {
         blow();
-        if(fDown==false) map[fX][fY] = oval1[fColor];
-        if(sDown==false) map[sX][sY] = oval2[sColor];
-        if(fDown==false&&sDown==false){
+        if(!fDown) map[fX][fY] = oval1[fColor];
+        if(!sDown) map[sX][sY] = oval2[sColor];
+        if(!fDown && !sDown){
             checkOval();
             while (isTrue()==1){
                 deOval();
                 checkOval();
+                Thread.sleep(50);
             }
             newOval();
         }
@@ -291,7 +292,11 @@ class PopuOval extends JPanel implements KeyListener{
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DOWN:
-                down();
+                try {
+                    down();
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
                 break;
             case KeyEvent.VK_UP:
                 turn();
@@ -318,7 +323,11 @@ class PopuOval extends JPanel implements KeyListener{
             blow();
             if(fDown) fY += 1;
             if(sDown) sY += 1;
-            addOval();
+            try {
+                addOval();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 }
